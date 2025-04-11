@@ -129,7 +129,7 @@ def register():
         db.execute("INSERT INTO users (email, password) VALUES (?, ?)", (email, password))
         db.commit()
         return redirect(url_for('login'))
-    return render_template('register.html')
+    return render_template('rejestracja.html')
 
 # Logowanie
 @app.route('/login', methods=['GET', 'POST'])
@@ -144,7 +144,7 @@ def login():
         if user and check_password_hash(user[1], password):
             session['user_id'] = user[0]
             return redirect(url_for('index'))
-    return render_template('login.html')
+    return render_template('logowanie.html')
 
 # Wylogowanie
 @app.route('/logout')
