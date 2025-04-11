@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ gra.info.title }} – Szczegóły gry</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .zielona-cena {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .game-header {
+            text-align: center;
+        }
+        .game-thumb {
+            max-width: 300px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ gra.info.title }}</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Strona główna</a>
+            <a href="{{ url_for('wyniki', q=gra.info.title) }}">Powrót do wyników</a>
+        </nav>
+    </header>
+
+    <main>
+        {% if session.get('user_id') %}
+        <p style="text-align: center; font-style: italic; color: #333;">Jesteś zalogowany</p>
+        {% endif %}
+
+
+        <div class="game-header">
+            <img src="{{ gra.info.thumb }}" alt="Okładka gry" class="game-thumb">
+            <h2>Oferty w sklepach</h2>
+            <p><em>Cena przeliczona wg kursu NBP, może różnić się od realnej oferty.</em></p>
+        </div>
+
+        <ul class="game-list">
+            {% set min_price = gra.deals | map(attribute='price') | map('float') | min %}
+            {% for oferta in gra.deals %}
+                <li>
+                    <img src="{{ oferta.store_logo }}" alt="{{ oferta.store_name }}" width="100"><br>
+                    <strong>{{ oferta.store_name }}</strong><br>
+                    {% if oferta.price|float == min_price %}
+                    <span class="zielona-cena">Cena: {{ oferta.price }} USD (~{{ oferta.price_pln }} PLN)</span>
+                    {% else %}
+                    Cena: {{ oferta.price }} USD (~{{ oferta.price_pln }} PLN)
+                    {% endif %}<br>
+                    <a href="https://www.cheapshark.com/redirect?dealID={{ oferta.dealID }}" target="_blank">Kup teraz</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

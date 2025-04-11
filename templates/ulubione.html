@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Ulubione gry</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Twoje ulubione gry</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Strona główna</a>
+            <a href="{{ url_for('logout') }}">Wyloguj</a>
+        </nav>
+    </header>
+
+    <main>
+        {% if session.get('user_id') %}
+        <p style="text-align: center; font-style: italic; color: #333;">Jesteś zalogowany</p>
+        {% endif %}
+
+        {% if gry %}
+            <ul class="game-list">
+                {% for gra in gry %}
+                    <li>{{ gra[0] }} — {{ gra[1] }} USD</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Brak ulubionych gier.</p>
+        {% endif %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Porównywarka cen gier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>🎮 Porównywarka cen gier</h1>
+        <nav>
+            <a href="{{ url_for('ulubione') }}">Ulubione</a>
+            <a href="{{ url_for('historia') }}">Historia</a>
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('logout') }}">Wyloguj</a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Zaloguj</a>
+                <a href="{{ url_for('register') }}">Zarejestruj</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% if session.get('user_id') %}
+        <p style="text-align: center; font-style: italic; color: #333;">Jesteś zalogowany</p>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <form action="{{ url_for('wyniki') }}" method="get" style="display: inline-block;">
+                <label for="q" style="font-size: 1.2rem; margin-right: 0.5rem;">Wyszukaj grę:</label>
+                <input type="text" name="q" id="q" required style="font-size: 1.2rem; padding: 0.3rem 0.6rem;">
+                <button type="submit" style="font-size: 1.2rem; padding: 0.3rem 0.8rem;">Szukaj</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

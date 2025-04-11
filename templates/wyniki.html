@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wyniki wyszukiwania</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .game-thumb {
+            max-width: 150px;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Wyniki dla: "{{ query }}"</h1>
+        <nav>
+            <a href="{{ url_for('index') }}">Strona główna</a>
+        </nav>
+    </header>
+
+    <main>
+        {% if session.get('user_id') %}
+        <p style="text-align: center; font-style: italic; color: #333;">Jesteś zalogowany</p>
+        {% endif %}
+
+        {% if gry %}
+            <p><em>Cena przeliczona wg kursu NBP, może różnić się od realnej oferty.</em></p>
+            <ul class="game-list">
+                {% for gra in gry %}
+                    <li>
+                        <img src="{{ gra.thumb }}" alt="Okładka gry {{ gra.external }}" class="game-thumb"><br>
+                        <h3>{{ gra.external }}</h3>
+                        <p>
+                            Najniższa cena: {{ gra.cheapest }} USD
+                            (~<span>{{ gra.cheapest_pln }} PLN</span>)
+                        </p>
+                        <a href="{{ url_for('gra_szczegoly', game_id=gra.gameID) }}">Zobacz szczegóły</a>
+
+                        {% if session.get('user_id') %}
+                            <form action="{{ url_for('dodaj_ulubione') }}" method="post">
+                                <input type="hidden" name="game_id" value="{{ gra.gameID }}">
+                                <input type="hidden" name="title" value="{{ gra.external }}">
+                                <input type="hidden" name="price" value="{{ gra.cheapest }}">
+                                <button type="submit">Dodaj do ulubionych</button>
+                            </form>
+                        {% else %}
+                            <p><em>Zaloguj się, aby dodać do ulubionych</em></p>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <div class="pagination">
+                {% if page > 1 %}
+                    <a href="{{ url_for('wyniki', q=query, page=page - 1) }}">&laquo; Poprzednia</a>
+                {% endif %}
+                <a href="{{ url_for('wyniki', q=query, page=page + 1) }}">Następna &raquo;</a>
+            </div>
+        {% else %}
+            <p style="text-align: center;">Nie znaleziono wyników.</p>
+        {% endif %}
+    </main>
+</body>
+</html>
